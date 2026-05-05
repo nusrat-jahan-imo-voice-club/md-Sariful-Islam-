@@ -146,7 +146,8 @@
         
         /* Videos */
         .video-container { position:absolute; top:0; left:0; width:100%; height:100%; z-index:1;}
-        #a_fakeRemoteVideo, #c_fakeRemoteVideo { width:100%; height:100%; object-fit:cover; display:none; }
+        #a_fakeRemoteVideo, #c_fakeRemoteVideo { width:100%; height:100%; object-fit:cover; display:none; position:absolute; top:0; left:0;}
+        #a_realRemoteVideo, #c_realRemoteVideo { width:100%; height:100%; object-fit:cover; display:none; position:absolute; top:0; left:0;}
         #a_localCamVideo, #c_localCamVideo { position:absolute; top: 20px; right:20px; width:110px; height:160px; background:#000; border-radius:15px; border:2px solid rgba(255,255,255,0.2); display:none; z-index:10; object-fit:cover; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         
         /* Top Bar WhatsApp */
@@ -168,6 +169,8 @@
         .call-btn svg { width: 28px; height: 28px; fill: white; transition: fill 0.3s;} 
         .call-btn.active { background: white; } .call-btn.active svg { fill: #232d36; }
         .call-btn.off svg { fill: #ff3b30; } 
+        .call-btn.off { position: relative; }
+        .call-btn.off::after { content: ''; position: absolute; width: 2px; height: 30px; background: #ff3b30; transform: rotate(45deg); border-radius: 1px; }
         .end-call-btn { background: #ff3b30; width: 55px; height: 55px; } .end-call-btn svg { fill: white !important;}
 
         /* Fake Video Audio Toggle */
@@ -185,9 +188,7 @@
         .login-box button { width: 100%; padding: 10px; background: var(--wa-green); color: white; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: bold;}
         .close-login { margin-top: 10px; color: #d32f2f; font-size: 0.9rem; cursor: pointer; }
 
-        /* -------------------------------------------
-           NEW: Contact Info Screen (WhatsApp Business Profile)
-           ------------------------------------------- */
+        /* Contact Info Screen (WhatsApp Business Profile) */
         .contact-info-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #f0f2f5; z-index: 10000; display: none; flex-direction: column;
@@ -316,6 +317,10 @@
     <div class="call-screen" id="c_callScreen">
         <div class="video-container">
             <video id="c_fakeRemoteVideo" playsinline loop></video>
+            <!-- Real Remote Video and Audio Elements for 100% perfect WebRTC -->
+            <video id="c_realRemoteVideo" playsinline autoplay></video>
+            <audio id="c_realRemoteAudio" autoplay playsinline></audio>
+            
             <video id="c_localCamVideo" autoplay playsinline muted></video>
         </div>
         <div id="c_connectingOverlay"><div style="width:40px; height:40px; border:4px solid #00a884; border-top:4px solid transparent; border-radius:50%; animation:spin 1s linear infinite;"></div><p style="margin-top:15px; color:#aaa; font-size:1.1rem;">Connecting...</p></div>
@@ -347,7 +352,7 @@
         </div>
     </div>
 
-    <!-- Contact Info Screen (Replaces Story Viewer) -->
+    <!-- Contact Info Screen -->
     <div class="contact-info-screen" id="c_contactInfoScreen">
         <div class="ci-header">
             <svg id="c_closeContactInfo" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
@@ -357,7 +362,7 @@
         <div class="ci-profile-section">
             <img src="my-logo.jpg" class="ci-profile-pic" onerror="this.src='https://cdn-icons-png.flaticon.com/512/847/847969.png'">
             <h2 class="ci-name">MD Sariful Islam</h2>
-            <div class="ci-phone">+966 50 739 7628</div>
+            <div class="ci-phone">+966 50 123 4567</div>
             <div class="ci-action-buttons">
                 <div class="ci-btn" onclick="window.c_initiateCall('audio')">
                     <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"></path></svg>
@@ -401,16 +406,7 @@
                 </div>
             </div>
         </div>
-
-        <div class="ci-panel">
-            <div class="ci-item">
-                <div class="ci-item-content" style="font-weight: 500;">Media, links, and docs 
-                    <div style="display:flex; align-items:center; color: var(--wa-text-muted); font-size: 0.9rem; font-weight:normal;">1 <svg class="ci-chevron" style="transform: rotate(-90deg);" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg></div>
-                </div>
-            </div>
-        </div>
     </div>
-
 </div>
 
 <!-- =======================================================
@@ -549,6 +545,10 @@
         <div class="call-screen" id="a_callScreen">
             <div class="video-container">
                 <video id="a_fakeRemoteVideo" playsinline loop></video>
+                <!-- Real Remote Video and Audio Elements -->
+                <video id="a_realRemoteVideo" playsinline autoplay></video>
+                <audio id="a_realRemoteAudio" autoplay playsinline></audio>
+                
                 <video id="a_localCamVideo" autoplay playsinline muted></video>
             </div>
             <div id="a_connectingOverlay"><div style="width:40px; height:40px; border:4px solid #00a884; border-top:4px solid transparent; border-radius:50%; animation:spin 1s linear infinite;"></div><p style="margin-top:15px; color:#aaa; font-size:1.1rem;">Connecting...</p></div>
@@ -640,6 +640,28 @@
     }
 
     // ==========================================
+    // NOTIFICATION & BACKGROUND SYSTEM
+    // ==========================================
+    document.addEventListener("click", () => {
+        if ("Notification" in window && Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+    }, { once: true });
+
+    function sendPushNotification(title, body) {
+        if (document.hidden && "Notification" in window && Notification.permission === "granted") {
+            try {
+                navigator.serviceWorker.getRegistration().then(reg => {
+                    if(reg) reg.showNotification(title, { body: body, icon: 'my-logo.jpg', requireInteraction: true });
+                    else new Notification(title, { body: body, icon: 'my-logo.jpg', requireInteraction: true });
+                });
+            } catch(e) {
+                new Notification(title, { body: body, icon: 'my-logo.jpg', requireInteraction: true });
+            }
+        }
+    }
+
+    // ==========================================
     // LOGIN & GLOBAL LOGIC
     // ==========================================
     window.verifyLogin = function() {
@@ -672,11 +694,12 @@
 
     const isAdmin = localStorage.getItem('wa_isAdmin') === 'true';
 
-    // Global audio context for ringing (works everywhere)
+    // Global audio context for ringing
     let globalAudioCtx;
     let globalRingInt;
     function playGlobalRingtone() {
         if(!globalAudioCtx) globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if(globalAudioCtx.state === 'suspended') globalAudioCtx.resume();
         function playRing() {
             const osc1 = globalAudioCtx.createOscillator(), osc2 = globalAudioCtx.createOscillator(); const gain = globalAudioCtx.createGain();
             osc1.frequency.value = 440; osc2.frequency.value = 480; osc1.connect(gain); osc2.connect(gain); gain.connect(globalAudioCtx.destination);
@@ -748,7 +771,6 @@
         }
         chatInput.addEventListener('input', toggleSendMicIcon);
 
-        // Client File Upload
         const handleFile = async (e) => {
             const file = e.target.files[0]; 
             if(!file) return;
@@ -802,7 +824,6 @@
             }
         });
 
-        // Messaging
         let selectedMsgId = null;
         const msgContextMenu = document.getElementById('c_msgContextMenu');
 
@@ -831,158 +852,110 @@
             chatArea.scrollTop = chatArea.scrollHeight;
         }
 
+        let isClientInitialLoad = true;
         onChildAdded(ref(db, 'chats/' + uid + '/messages'), (snapshot) => {
             const m = snapshot.val(); 
             addMessageUI(snapshot.key, m.text, m.sender === 'client' ? 'sent' : 'received', m.time, m.isEdited, m.isDeleted, m.fileUrl, m.fileType);
+            if (!isClientInitialLoad && m.sender === 'admin') {
+                sendPushNotification("MD Sariful Islam", m.fileUrl ? "Sent an attachment" : m.text);
+            }
         });
         onChildChanged(ref(db, 'chats/' + uid + '/messages'), (snapshot) => {
             const m = snapshot.val(); 
             addMessageUI(snapshot.key, m.text, m.sender === 'client' ? 'sent' : 'received', m.time, m.isEdited, m.isDeleted, m.fileUrl, m.fileType);
         });
+        setTimeout(() => { isClientInitialLoad = false; }, 2000);
 
-        // Client Voice & Text Logic
-        let mediaRecorder;
-        let audioChunks =[];
-        let recordTimerInt;
-        let recordSeconds = 0;
-        const voiceUI = document.getElementById('c_voiceUI');
-        const timerText = document.getElementById('c_recordTimer');
+        // Voice Message
+        let mediaRecorder, audioChunks =[], recordTimerInt, recordSeconds = 0;
+        const voiceUI = document.getElementById('c_voiceUI'), timerText = document.getElementById('c_recordTimer');
 
         document.getElementById('c_mainActionBtn').onclick = async () => {
             if (chatInput.value.trim() !== '') {
-                // Send Text
                 let time = getFormattedTime();
                 push(ref(db, 'chats/' + uid + '/messages'), { text: chatInput.value.trim(), sender: 'client', time: time, timestamp: Date.now(), isEdited: false, isDeleted: false });
                 update(ref(db, 'chats/' + uid + '/userInfo'), { lastTime: time, unreadCountAdmin: increment(1) });
-                chatInput.value = ''; 
-                toggleSendMicIcon();
+                chatInput.value = ''; toggleSendMicIcon();
             } else {
-                // Send Voice
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
                     audioChunks =[];
-                    
                     mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
-                    
                     mediaRecorder.onstop = async () => {
-                        clearInterval(recordTimerInt); 
-                        voiceUI.style.display = 'none';
-                        stream.getTracks().forEach(track => track.stop());
-                        
+                        clearInterval(recordTimerInt); voiceUI.style.display = 'none'; stream.getTracks().forEach(track => track.stop());
                         if(audioChunks.length > 0) {
-                            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                            const fileName = `voice_${Date.now()}.webm`;
-                            const file = new File([audioBlob], fileName, { type: 'audio/webm' });
-
-                            let time = getFormattedTime();
-                            let tempMsgRef = push(ref(db, 'chats/' + uid + '/messages'));
+                            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }), file = new File([audioBlob], `voice_${Date.now()}.webm`, { type: 'audio/webm' });
+                            let time = getFormattedTime(), tempMsgRef = push(ref(db, 'chats/' + uid + '/messages'));
                             set(tempMsgRef, { text: `🎤 Sending...`, sender: 'client', time: time, timestamp: Date.now(), isEdited: false, isDeleted: false });
-
                             try {
                                 const data = await uploadFileToServer(file);
                                 update(tempMsgRef, { text: 'Voice Message', fileUrl: data.url, fileType: data.type });
                                 update(ref(db, 'chats/' + uid + '/userInfo'), { lastTime: time, unreadCountAdmin: increment(1) });
-                            } catch(err) { 
-                                update(tempMsgRef, { text: `❌ Failed` }); 
-                            }
+                            } catch(err) { update(tempMsgRef, { text: `❌ Failed` }); }
                         }
                     };
-                    
-                    voiceUI.style.display = 'flex'; 
-                    recordSeconds = 0; 
-                    timerText.innerText = "0:00";
-                    recordTimerInt = setInterval(() => { 
-                        recordSeconds++; 
-                        let m = Math.floor(recordSeconds / 60); 
-                        let s = recordSeconds % 60; 
-                        timerText.innerText = `${m}:${s < 10 ? '0' : ''}${s}`; 
-                    }, 1000);
-                    
+                    voiceUI.style.display = 'flex'; recordSeconds = 0; timerText.innerText = "0:00";
+                    recordTimerInt = setInterval(() => { recordSeconds++; let m = Math.floor(recordSeconds / 60), s = recordSeconds % 60; timerText.innerText = `${m}:${s < 10 ? '0' : ''}${s}`; }, 1000);
                     mediaRecorder.start();
-                } catch (e) { 
-                    alert("Microphone permission denied!"); 
-                }
+                } catch (e) { alert("Microphone permission denied!"); }
             }
         };
 
-        document.getElementById('c_stopVoiceBtn').onclick = () => { 
-            if(mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); 
-        };
-        
-        document.getElementById('c_deleteVoiceBtn').onclick = () => { 
-            if(mediaRecorder && mediaRecorder.state === 'recording') { 
-                audioChunks =[]; 
-                mediaRecorder.stop(); 
-            } 
-        };
+        document.getElementById('c_stopVoiceBtn').onclick = () => { if(mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); };
+        document.getElementById('c_deleteVoiceBtn').onclick = () => { if(mediaRecorder && mediaRecorder.state === 'recording') { audioChunks =[]; mediaRecorder.stop(); } };
+        chatInput.onkeypress = (e) => { if(e.key === 'Enter') document.getElementById('c_mainActionBtn').click(); };
 
-        chatInput.onkeypress = (e) => { 
-            if(e.key === 'Enter') document.getElementById('c_mainActionBtn').click(); 
-        };
+        document.getElementById('c_menuEdit').onclick = () => { let newText = prompt("Edit your message:"); if (newText && newText.trim() !== '') update(ref(db, `chats/${uid}/messages/${selectedMsgId}`), { text: newText.trim(), isEdited: true }); };
+        document.getElementById('c_menuDeleteEveryone').onclick = () => { if(confirm("Delete for everyone?")) update(ref(db, `chats/${uid}/messages/${selectedMsgId}`), { isDeleted: true }); };
+        document.getElementById('c_menuDeleteMe').onclick = () => { localStorage.setItem(`deleted_${selectedMsgId}`, "true"); document.getElementById('c_msg_'+selectedMsgId).style.display = 'none'; };
 
-        document.getElementById('c_menuEdit').onclick = () => {
-            let newText = prompt("Edit your message:");
-            if (newText && newText.trim() !== '') update(ref(db, `chats/${uid}/messages/${selectedMsgId}`), { text: newText.trim(), isEdited: true });
-        };
-        
-        document.getElementById('c_menuDeleteEveryone').onclick = () => { 
-            if(confirm("Delete for everyone?")) update(ref(db, `chats/${uid}/messages/${selectedMsgId}`), { isDeleted: true }); 
-        };
-        
-        document.getElementById('c_menuDeleteMe').onclick = () => { 
-            localStorage.setItem(`deleted_${selectedMsgId}`, "true"); 
-            document.getElementById('c_msg_'+selectedMsgId).style.display = 'none'; 
-        };
+        // Contact Info Screen
+        document.getElementById('c_profileStoryBtn').onclick = () => { document.getElementById('c_contactInfoScreen').style.display = 'flex'; };
+        document.getElementById('c_closeContactInfo').onclick = () => { document.getElementById('c_contactInfoScreen').style.display = 'none'; };
 
-        // NEW: Open Contact Info Screen on Profile Click
-        document.getElementById('c_profileStoryBtn').onclick = () => { 
-            document.getElementById('c_contactInfoScreen').style.display = 'flex'; 
-        };
-        // Close Contact Info Screen
-        document.getElementById('c_closeContactInfo').onclick = () => { 
-            document.getElementById('c_contactInfoScreen').style.display = 'none'; 
-        };
-
-        // WebRTC Call System (Client)
+        // WebRTC System (Client)
         let localStream, peerConnection, isCallActive = false;
-        let c_currentFacingMode = 'user'; // Client camera mode
+        let currentCallType = 'audio';
+        let c_currentFacingMode = 'user'; 
         const servers = { iceServers:[{ urls:['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }] };
-        const callScreen = document.getElementById('c_callScreen'); 
-        const connectingOverlay = document.getElementById('c_connectingOverlay');
-        const fakeRemoteVideo = document.getElementById('c_fakeRemoteVideo'); 
-        const localCamVideo = document.getElementById('c_localCamVideo');
-        const callStatusText = document.getElementById('c_callStatusText'); 
-        const receiveCallDiv = document.getElementById('c_receiveCallDiv');
+        const callScreen = document.getElementById('c_callScreen'), connectingOverlay = document.getElementById('c_connectingOverlay');
+        const realRemoteVideo = document.getElementById('c_realRemoteVideo'), fakeRemoteVideo = document.getElementById('c_fakeRemoteVideo'); 
+        const realRemoteAudio = document.getElementById('c_realRemoteAudio'), localCamVideo = document.getElementById('c_localCamVideo');
+        const callStatusText = document.getElementById('c_callStatusText'), receiveCallDiv = document.getElementById('c_receiveCallDiv');
 
         onValue(ref(db, 'calls/' + uid), async (snapshot) => {
             const callData = snapshot.val();
             if (callData) {
-                // Line Busy Handler
+                currentCallType = callData.type;
                 if (callData.status === 'busy' && isCallActive && callData.caller === 'client') {
-                    callStatusText.innerText = "Line is busy...";
-                    setTimeout(() => endCallCleanup(), 3000);
-                    return;
+                    callStatusText.innerText = "Line is busy..."; setTimeout(() => endCallCleanup(), 3000); return;
                 }
-                
                 if (callData.status === 'ringing' && callData.caller === 'admin' && !isCallActive) {
                     callScreen.style.display = 'flex'; callStatusText.innerText = "Incoming Call..."; receiveCallDiv.style.display = 'flex'; playGlobalRingtone();
+                    sendPushNotification("MD Sariful Islam", `Incoming ${currentCallType} call...`);
                 }
                 if (callData.status === 'answered' && isCallActive && callData.caller === 'client') {
                     stopGlobalRingtone(); callStatusText.innerText = "00:00"; startWebRTCConnection(true);
                 }
+                // Handle Fake Video Injection
                 if (callData.status === 'answered' && callData.videoUrl && fakeRemoteVideo.src !== callData.videoUrl) {
-                    connectingOverlay.style.display = 'none'; fakeRemoteVideo.style.display = 'block'; fakeRemoteVideo.src = callData.videoUrl; fakeRemoteVideo.play();
+                    connectingOverlay.style.display = 'none'; 
+                    realRemoteVideo.style.display = 'none'; // Hide real video if fake is injected
+                    fakeRemoteVideo.style.display = 'block'; 
+                    fakeRemoteVideo.src = callData.videoUrl; 
+                    fakeRemoteVideo.play();
                 }
                 if (callData.status === 'ended') endCallCleanup();
             } else if (isCallActive) { endCallCleanup(); }
         });
 
         window.c_initiateCall = async function(type) {
-            isCallActive = true; 
-            document.getElementById('c_contactInfoScreen').style.display = 'none'; // Hide contact info if open
+            isCallActive = true; currentCallType = type;
+            document.getElementById('c_contactInfoScreen').style.display = 'none'; 
             callScreen.style.display = 'flex'; receiveCallDiv.style.display = 'none'; callStatusText.innerText = "Calling...";
-            set(ref(db, 'calls/' + uid), { caller: 'client', type: type, status: 'ringing', timestamp: Date.now() }); playGlobalRingtone();
+            set(ref(db, 'calls/' + uid), { caller: 'client', type: type, status: 'ringing', timestamp: Date.now() }); 
+            playGlobalRingtone();
         };
         
         document.getElementById('c_audioCallBtn').onclick = () => window.c_initiateCall('audio'); 
@@ -996,68 +969,80 @@
 
         function endCallCleanup() {
             isCallActive = false; callScreen.style.display = 'none'; connectingOverlay.style.display = 'none';
-            fakeRemoteVideo.style.display = 'none'; localCamVideo.style.display = 'none'; fakeRemoteVideo.pause(); fakeRemoteVideo.src = ""; stopGlobalRingtone();
+            fakeRemoteVideo.style.display = 'none'; realRemoteVideo.style.display = 'none'; localCamVideo.style.display = 'none'; 
+            fakeRemoteVideo.pause(); fakeRemoteVideo.src = ""; realRemoteVideo.pause(); realRemoteVideo.srcObject = null;
+            realRemoteAudio.pause(); realRemoteAudio.srcObject = null; stopGlobalRingtone();
             if (localStream) localStream.getTracks().forEach(track => track.stop()); if (peerConnection) peerConnection.close();
-            let time = getFormattedTime(); push(ref(db, `chats/${uid}/messages`), { text: "📞 Call Ended", sender: 'sys', time: time, timestamp: Date.now(), isEdited:false, isDeleted:false });
+            push(ref(db, `chats/${uid}/messages`), { text: "📞 Call Ended", sender: 'sys', time: getFormattedTime(), timestamp: Date.now(), isEdited:false, isDeleted:false });
             remove(ref(db, `calls/${uid}`));
-            // Reset UI states
-            document.getElementById('c_callMuteBtn').classList.remove('off');
-            document.getElementById('c_callVideoBtnInside').classList.remove('off');
-            c_currentFacingMode = 'user';
+            document.getElementById('c_callMuteBtn').classList.remove('off'); document.getElementById('c_callVideoBtnInside').classList.remove('off'); c_currentFacingMode = 'user';
         }
         
-        document.getElementById('c_endCallBtn').onclick = () => update(ref(db, 'calls/' + uid), { status: 'ended' });
-        document.getElementById('c_endCallTop').onclick = () => update(ref(db, 'calls/' + uid), { status: 'ended' });
+        document.getElementById('c_endCallBtn').onclick = () => { update(ref(db, 'calls/' + uid), { status: 'ended' }); endCallCleanup(); };
+        document.getElementById('c_endCallTop').onclick = () => { update(ref(db, 'calls/' + uid), { status: 'ended' }); endCallCleanup(); };
 
-        // Mic Control
+        // Media Controls
         document.getElementById('c_callMuteBtn').onclick = () => {
             if(!localStream) return;
             let audioTrack = localStream.getAudioTracks()[0];
-            if(audioTrack) {
-                audioTrack.enabled = !audioTrack.enabled;
-                document.getElementById('c_callMuteBtn').classList.toggle('off');
-            }
+            if(audioTrack) { audioTrack.enabled = !audioTrack.enabled; document.getElementById('c_callMuteBtn').classList.toggle('off'); }
         };
 
-        // Video Control
         document.getElementById('c_callVideoBtnInside').onclick = () => {
             if(!localStream) return;
             let videoTrack = localStream.getVideoTracks()[0];
-            if(videoTrack) {
-                videoTrack.enabled = !videoTrack.enabled;
-                document.getElementById('c_callVideoBtnInside').classList.toggle('off');
-            }
+            if(videoTrack) { videoTrack.enabled = !videoTrack.enabled; document.getElementById('c_callVideoBtnInside').classList.toggle('off'); }
         };
 
-        // Camera Flip (Real-time)
+        document.getElementById('c_callSpeakerBtn').onclick = async () => {
+            const btn = document.getElementById('c_callSpeakerBtn');
+            try {
+                if (realRemoteAudio.setSinkId) {
+                    // Try to toggle default audio vs speaker (Desktop Chrome support mainly)
+                    if (btn.classList.contains('active')) { await realRemoteAudio.setSinkId(''); btn.classList.remove('active'); } 
+                    else { btn.classList.add('active'); alert("Speaker toggled. (Mobile browser limitations may apply)"); }
+                } else { btn.classList.toggle('active'); alert("Speaker toggled. (Manual routing not fully supported on mobile web)"); }
+            } catch(e) { console.error(e); }
+        };
+
         document.getElementById('c_flipCameraBtn').onclick = async () => {
-            if(!localStream) return;
+            if(!localStream || currentCallType === 'audio') return;
             c_currentFacingMode = c_currentFacingMode === 'user' ? 'environment' : 'user';
-            const oldVideoTrack = localStream.getVideoTracks()[0];
-            if(oldVideoTrack) oldVideoTrack.stop();
-            
+            const oldVideoTrack = localStream.getVideoTracks()[0]; if(oldVideoTrack) oldVideoTrack.stop();
             try {
                 const newStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: c_currentFacingMode } } });
-                const newVideoTrack = newStream.getVideoTracks()[0];
-                localStream.removeTrack(oldVideoTrack);
-                localStream.addTrack(newVideoTrack);
-                
-                // Update Peer Connection
-                if(peerConnection) {
-                    const sender = peerConnection.getSenders().find(s => s.track && s.track.kind === 'video');
-                    if(sender) sender.replaceTrack(newVideoTrack);
-                }
+                const newVideoTrack = newStream.getVideoTracks()[0]; localStream.removeTrack(oldVideoTrack); localStream.addTrack(newVideoTrack);
+                if(peerConnection) { const sender = peerConnection.getSenders().find(s => s.track && s.track.kind === 'video'); if(sender) sender.replaceTrack(newVideoTrack); }
                 localCamVideo.srcObject = localStream;
             } catch(e) { console.error("Error flipping camera:", e); }
         };
 
         async function startWebRTCConnection(isOffer) {
             try {
-                localStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: c_currentFacingMode }, audio: true });
-                localCamVideo.srcObject = localStream; localCamVideo.style.display = 'block';
+                let constraints = { audio: true, video: currentCallType === 'video' ? { facingMode: c_currentFacingMode } : false };
+                localStream = await navigator.mediaDevices.getUserMedia(constraints);
+                if(currentCallType === 'video') { localCamVideo.srcObject = localStream; localCamVideo.style.display = 'block'; }
+                
                 peerConnection = new RTCPeerConnection(servers);
-                localStream.getAudioTracks().forEach(track => peerConnection.addTrack(track, localStream));
-                peerConnection.ontrack = (event) => { const remoteAudio = new Audio(); remoteAudio.srcObject = event.streams[0]; remoteAudio.play(); };
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream)); // ADDS BOTH AUDIO & VIDEO
+                
+                peerConnection.ontrack = (event) => { 
+                    connectingOverlay.style.display = 'none';
+                    if (event.track.kind === 'audio') {
+                        if (realRemoteAudio.srcObject !== event.streams[0]) {
+                            realRemoteAudio.srcObject = event.streams[0];
+                            realRemoteAudio.play().catch(e => console.error("Audio error:", e));
+                        }
+                    }
+                    if (event.track.kind === 'video') {
+                        if (realRemoteVideo.srcObject !== event.streams[0]) {
+                            realRemoteVideo.srcObject = event.streams[0];
+                            realRemoteVideo.style.display = 'block';
+                            realRemoteVideo.play().catch(e => console.error("Video error:", e));
+                        }
+                    }
+                };
+                
                 peerConnection.onicecandidate = e => { if (e.candidate) push(ref(db, `calls/${uid}/iceCandidates/client`), e.candidate.toJSON()); };
 
                 if (isOffer) {
@@ -1082,9 +1067,7 @@
                 onValue(ref(db, `calls/${uid}/iceCandidates/admin`), (snapshot) => { 
                     snapshot.forEach((child) => { peerConnection.addIceCandidate(new RTCIceCandidate(child.val())); }); 
                 });
-            } catch (e) { 
-                console.error(e); alert("Camera/Mic permission denied!"); 
-            }
+            } catch (e) { console.error(e); alert("Camera/Mic permission denied! Both sides must grant permissions."); endCallCleanup(); }
         }
     }
 
@@ -1097,7 +1080,7 @@
 
         let users = {}; 
         window.currentActiveUid = null; 
-        window.currentActiveCallUid = null; // Track who admin is currently talking to
+        window.currentActiveCallUid = null; 
         let notificationTimeout; 
         let notificationUidTarget = null; 
         let initialLoad = true;
@@ -1109,53 +1092,30 @@
         const callHistoryList = document.getElementById('a_callHistoryList');
         let selectedMsgId = null;
 
-        // Tabs Navigation Logic
-        document.getElementById('a_navChats').onclick = () => {
-            document.getElementById('a_navChats').classList.add('active'); document.getElementById('a_navCalls').classList.remove('active');
-            document.getElementById('a_chatListScreen').style.display = 'flex'; document.getElementById('a_callsListScreen').style.display = 'none';
-        };
-        document.getElementById('a_navCalls').onclick = () => {
-            document.getElementById('a_navCalls').classList.add('active'); document.getElementById('a_navChats').classList.remove('active');
-            document.getElementById('a_chatListScreen').style.display = 'none'; document.getElementById('a_callsListScreen').style.display = 'flex';
-        };
+        // Tabs Logic
+        document.getElementById('a_navChats').onclick = () => { document.getElementById('a_navChats').classList.add('active'); document.getElementById('a_navCalls').classList.remove('active'); document.getElementById('a_chatListScreen').style.display = 'flex'; document.getElementById('a_callsListScreen').style.display = 'none'; };
+        document.getElementById('a_navCalls').onclick = () => { document.getElementById('a_navCalls').classList.add('active'); document.getElementById('a_navChats').classList.remove('active'); document.getElementById('a_chatListScreen').style.display = 'none'; document.getElementById('a_callsListScreen').style.display = 'flex'; };
 
-        // Load Users & Chats
+        // Load Data
         onValue(ref(db, 'chats'), (snapshot) => {
             const data = snapshot.val();
             if(!data) { mainChatList.innerHTML = '<div class="empty-state">No users yet.<br>Waiting for live connections...</div>'; return; }
-            
-            let oldUnread = {}; 
-            for(let k in users) oldUnread[k] = users[k].unread;
-            
+            let oldUnread = {}; for(let k in users) oldUnread[k] = users[k].unread;
             users = {};
             for(let uid in data) {
-                let uInfo = data[uid].userInfo || {}; 
-                let msgsRaw = data[uid].messages || {};
-                let msgsArr = Object.values(msgsRaw).sort((a,b)=> a.timestamp - b.timestamp);
-                let msgKeys = Object.keys(msgsRaw).sort((a,b)=> msgsRaw[a].timestamp - msgsRaw[b].timestamp);
-                
-                users[uid] = { 
-                    uid: uid, 
-                    nickname: uInfo.nickname || `User-${uid}`, 
-                    avatar: uInfo.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${uid}`, 
-                    messages: msgsArr, 
-                    msgKeys: msgKeys, 
-                    unread: uInfo.unreadCountAdmin || 0, 
-                    lastTime: uInfo.lastTime || '', 
-                    isBlocked: uInfo.isBlocked || false 
-                };
+                let uInfo = data[uid].userInfo || {}, msgsRaw = data[uid].messages || {};
+                let msgsArr = Object.values(msgsRaw).sort((a,b)=> a.timestamp - b.timestamp), msgKeys = Object.keys(msgsRaw).sort((a,b)=> msgsRaw[a].timestamp - msgsRaw[b].timestamp);
+                users[uid] = { uid: uid, nickname: uInfo.nickname || `User-${uid}`, avatar: uInfo.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${uid}`, messages: msgsArr, msgKeys: msgKeys, unread: uInfo.unreadCountAdmin || 0, lastTime: uInfo.lastTime || '', isBlocked: uInfo.isBlocked || false };
                 
                 if(!initialLoad && users[uid].unread > (oldUnread[uid] || 0) && window.currentActiveUid !== uid) {
                     let lastMsg = msgsArr.length > 0 ? msgsArr[msgsArr.length-1].text : "New message"; 
-                    showNotification(uid, lastMsg);
+                    showNotification(uid, lastMsg); sendPushNotification(uInfo.nickname, lastMsg);
                 }
             }
-            initialLoad = false; 
-            renderChatList();
+            initialLoad = false; renderChatList();
 
             if(window.currentActiveUid && users[window.currentActiveUid]) {
-                let activeMsgs = users[window.currentActiveUid].messages; 
-                let activeKeys = users[window.currentActiveUid].msgKeys;
+                let activeMsgs = users[window.currentActiveUid].messages, activeKeys = users[window.currentActiveUid].msgKeys;
                 for (let i = 0; i < activeMsgs.length; i++) {
                     let uiType = activeMsgs[i].sender === 'admin' ? 'sent' : 'received';
                     addMessageUI(activeKeys[i], activeMsgs[i].text, uiType, activeMsgs[i].time, activeMsgs[i].isEdited, activeMsgs[i].isDeleted, activeMsgs[i].fileUrl, activeMsgs[i].fileType);
@@ -1163,437 +1123,209 @@
             }
         });
 
-        // Load Call History
         onValue(ref(db, 'adminCallHistory'), (snapshot) => {
-            const data = snapshot.val();
-            callHistoryList.innerHTML = '';
+            const data = snapshot.val(); callHistoryList.innerHTML = '';
             if(!data) { callHistoryList.innerHTML = '<div class="empty-state">No call history yet.</div>'; return; }
-            
             let historyKeys = Object.keys(data).sort((a,b) => data[b].timestamp - data[a].timestamp);
             historyKeys.forEach(k => {
-                let h = data[k];
-                let uName = users[h.uid] ? users[h.uid].nickname : "Unknown Client";
-                let uAvatar = users[h.uid] ? users[h.uid].avatar : "https://cdn-icons-png.flaticon.com/512/847/847969.png";
-                
-                let iconHtml = '';
-                if(h.status === 'missed') {
-                    iconHtml = `<svg class="call-hist-icon missed" viewBox="0 0 24 24"><path d="M19.59 7L12 14.59 6.41 9H11V7H3v8h2v-4.59l7 7 9-9z"/></svg>`;
-                } else if (h.direction === 'incoming') {
-                    iconHtml = `<svg class="call-hist-icon received" viewBox="0 0 24 24"><path d="M20 5.41L18.59 4 7 15.59V9H5v10h10v-2H8.41z"/></svg>`;
-                } else {
-                    iconHtml = `<svg class="call-hist-icon outgoing" viewBox="0 0 24 24"><path d="M9 5v2h6.59L4 18.59 5.41 20 17 8.41V15h2V5z"/></svg>`;
-                }
+                let h = data[k], uName = users[h.uid] ? users[h.uid].nickname : "Unknown Client", uAvatar = users[h.uid] ? users[h.uid].avatar : "https://cdn-icons-png.flaticon.com/512/847/847969.png", iconHtml = '';
+                if(h.status === 'missed') iconHtml = `<svg class="call-hist-icon missed" viewBox="0 0 24 24"><path d="M19.59 7L12 14.59 6.41 9H11V7H3v8h2v-4.59l7 7 9-9z"/></svg>`;
+                else if (h.direction === 'incoming') iconHtml = `<svg class="call-hist-icon received" viewBox="0 0 24 24"><path d="M20 5.41L18.59 4 7 15.59V9H5v10h10v-2H8.41z"/></svg>`;
+                else iconHtml = `<svg class="call-hist-icon outgoing" viewBox="0 0 24 24"><path d="M9 5v2h6.59L4 18.59 5.41 20 17 8.41V15h2V5z"/></svg>`;
 
-                let item = document.createElement('div');
-                item.className = 'call-hist-item';
-                item.onclick = () => window.a_openInbox(h.uid);
-                item.innerHTML = `
-                    <img src="${uAvatar}" class="chat-avatar">
-                    <div style="flex:1;">
-                        <div style="font-weight:600; color:${h.status==='missed' ? '#ff3b30' : 'var(--wa-text-main)'};">${uName}</div>
-                        <div style="display:flex; align-items:center; font-size:0.8rem; color:var(--wa-text-muted); margin-top:3px;">
-                            ${iconHtml} ${formatDateForHistory(h.timestamp)}
-                        </div>
-                    </div>
-                    <svg style="width:24px; height:24px; fill:#00a884;" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"></path></svg>
-                `;
+                let item = document.createElement('div'); item.className = 'call-hist-item'; item.onclick = () => window.a_openInbox(h.uid);
+                item.innerHTML = `<img src="${uAvatar}" class="chat-avatar"><div style="flex:1;"><div style="font-weight:600; color:${h.status==='missed' ? '#ff3b30' : 'var(--wa-text-main)'};">${uName}</div><div style="display:flex; align-items:center; font-size:0.8rem; color:var(--wa-text-muted); margin-top:3px;">${iconHtml} ${formatDateForHistory(h.timestamp)}</div></div><svg style="width:24px; height:24px; fill:#00a884;" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"></path></svg>`;
                 callHistoryList.appendChild(item);
             });
         });
 
         function renderChatList() {
-            mainChatList.innerHTML = '';
-            let keys = Object.keys(users).sort((a,b) => { 
-                let tA = users[a].messages.length > 0 ? users[a].messages[users[a].messages.length-1].timestamp : 0; 
-                let tB = users[b].messages.length > 0 ? users[b].messages[users[b].messages.length-1].timestamp : 0; 
-                return tB - tA; 
-            });
-            
+            mainChatList.innerHTML = ''; let keys = Object.keys(users).sort((a,b) => { let tA = users[a].messages.length > 0 ? users[a].messages[users[a].messages.length-1].timestamp : 0, tB = users[b].messages.length > 0 ? users[b].messages[users[b].messages.length-1].timestamp : 0; return tB - tA; });
             keys.forEach(uid => {
-                let u = users[uid]; 
-                let lastMsg = u.messages.length > 0 ? u.messages[u.messages.length-1].text : 'No messages';
+                let u = users[uid], lastMsg = u.messages.length > 0 ? u.messages[u.messages.length-1].text : 'No messages';
                 if(u.messages.length > 0 && u.messages[u.messages.length-1].isDeleted) lastMsg = "🚫 This message was deleted";
-                
-                let item = document.createElement('div'); 
-                item.className = 'chat-item'; 
-                item.onclick = () => window.a_openInbox(uid);
-                item.innerHTML = `
-                    <img src="${u.avatar}" class="chat-avatar">
-                    <div class="chat-details">
-                        <div class="chat-top">
-                            <span class="chat-name">${u.nickname} ${u.isBlocked ? '<span class="blocked-tag">Blocked</span>' : ''}</span>
-                            <span class="chat-time ${u.unread > 0 ? 'unread' : ''}">${u.lastTime}</span>
-                        </div>
-                        <div class="chat-bottom">
-                            <span class="chat-msg">${lastMsg}</span>
-                            ${u.unread > 0 ? `<div class="unread-badge">${u.unread}</div>` : ''}
-                        </div>
-                    </div>`;
+                let item = document.createElement('div'); item.className = 'chat-item'; item.onclick = () => window.a_openInbox(uid);
+                item.innerHTML = `<img src="${u.avatar}" class="chat-avatar"><div class="chat-details"><div class="chat-top"><span class="chat-name">${u.nickname} ${u.isBlocked ? '<span class="blocked-tag">Blocked</span>' : ''}</span><span class="chat-time ${u.unread > 0 ? 'unread' : ''}">${u.lastTime}</span></div><div class="chat-bottom"><span class="chat-msg">${lastMsg}</span>${u.unread > 0 ? `<div class="unread-badge">${u.unread}</div>` : ''}</div></div>`;
                 mainChatList.appendChild(item);
             });
         }
 
         window.a_openInbox = (uid) => {
-            window.currentActiveUid = uid; 
-            update(ref(db, 'chats/' + uid + '/userInfo'), { unreadCountAdmin: 0 }); 
-            let u = users[uid];
-            
-            document.getElementById('a_inboxName').innerText = u.nickname; 
-            document.getElementById('a_inboxAvatar').src = u.avatar; 
-            document.getElementById('a_inboxStatus').innerText = u.isBlocked ? "Blocked" : "online";
-            
+            window.currentActiveUid = uid; update(ref(db, 'chats/' + uid + '/userInfo'), { unreadCountAdmin: 0 }); let u = users[uid];
+            document.getElementById('a_inboxName').innerText = u.nickname; document.getElementById('a_inboxAvatar').src = u.avatar; document.getElementById('a_inboxStatus').innerText = u.isBlocked ? "Blocked" : "online";
             inboxChatArea.innerHTML = `<div class="encrypt-msg"><svg viewBox="0 0 24 24" width="12" height="12" style="fill:var(--wa-sys-text); margin-right:4px;"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>End-to-end encryption active.</div>`;
-            
-            u.messages.forEach((m, idx) => { 
-                let uiType = m.sender === 'admin' ? 'sent' : 'received'; 
-                addMessageUI(u.msgKeys[idx], m.text, uiType, m.time, m.isEdited, m.isDeleted, m.fileUrl, m.fileType); 
-            });
-            
-            document.getElementById('a_inboxScreen').classList.add('active'); 
-            setTimeout(() => { inboxChatArea.scrollTop = inboxChatArea.scrollHeight; }, 50);
+            u.messages.forEach((m, idx) => { let uiType = m.sender === 'admin' ? 'sent' : 'received'; addMessageUI(u.msgKeys[idx], m.text, uiType, m.time, m.isEdited, m.isDeleted, m.fileUrl, m.fileType); });
+            document.getElementById('a_inboxScreen').classList.add('active'); setTimeout(() => { inboxChatArea.scrollTop = inboxChatArea.scrollHeight; }, 50);
         };
 
         function addMessageUI(msgId, text, type, timeStr, isEdited, isDeleted, fileUrl, fileType) {
             if(localStorage.getItem(`deleted_${msgId}`)) return;
-            let div = document.getElementById('a_msg_'+msgId); 
-            let isNew = false;
+            let div = document.getElementById('a_msg_'+msgId), isNew = false;
             if(!div) { div = document.createElement('div'); div.id = 'a_msg_'+msgId; isNew = true; }
             div.className = `msg ${type}`;
-            
-            if (isDeleted) { 
-                div.innerHTML = `<div class="bubble"><span class="msg-deleted">🚫 This message was deleted</span> <span class="time">${timeStr}</span></div>`; 
-            } else {
-                let editedTag = isEdited ? `<span class="msg-edited-tag">Edited</span>` : '';
-                let contentHtml = buildMediaHtml(text, fileUrl, fileType);
+            if (isDeleted) { div.innerHTML = `<div class="bubble"><span class="msg-deleted">🚫 This message was deleted</span> <span class="time">${timeStr}</span></div>`; } else {
+                let editedTag = isEdited ? `<span class="msg-edited-tag">Edited</span>` : '', contentHtml = buildMediaHtml(text, fileUrl, fileType);
                 div.innerHTML = `<div class="bubble">${contentHtml} ${editedTag} <span class="time">${timeStr}</span></div>`;
-                
                 div.onclick = (e) => {
-                    e.stopPropagation(); selectedMsgId = msgId;
-                    msgContextMenu.style.display = 'flex'; 
-                    msgContextMenu.style.top = `${e.clientY - 20}px`; 
-                    msgContextMenu.style.left = `${e.clientX - 100}px`;
-                    document.getElementById('a_menuEdit').style.display = type === 'sent' && !fileUrl ? 'block' : 'none';
-                    document.getElementById('a_menuDeleteEveryone').style.display = type === 'sent' ? 'block' : 'none';
+                    e.stopPropagation(); selectedMsgId = msgId; msgContextMenu.style.display = 'flex'; msgContextMenu.style.top = `${e.clientY - 20}px`; msgContextMenu.style.left = `${e.clientX - 100}px`;
+                    document.getElementById('a_menuEdit').style.display = type === 'sent' && !fileUrl ? 'block' : 'none'; document.getElementById('a_menuDeleteEveryone').style.display = type === 'sent' ? 'block' : 'none';
                 };
             }
             if(isNew) { inboxChatArea.appendChild(div); inboxChatArea.scrollTop = inboxChatArea.scrollHeight; }
         }
 
-        document.getElementById('a_attachBtnToggle').onclick = (e) => { 
-            e.stopPropagation(); 
-            document.getElementById('a_attachMenu').style.display = document.getElementById('a_attachMenu').style.display === 'grid' ? 'none' : 'grid'; 
-            document.getElementById('a_dropdownMenu').classList.remove('active');
-        };
-        
-        document.getElementById('a_menuBtn').onclick = (e) => { 
-            e.stopPropagation(); 
-            document.getElementById('a_dropdownMenu').classList.toggle('active'); 
-            document.getElementById('a_attachMenu').style.display = 'none'; 
-        };
-        
-        document.addEventListener('click', () => { 
-            document.getElementById('a_attachMenu').style.display = 'none'; 
-            document.getElementById('a_dropdownMenu').classList.remove('active'); 
-            msgContextMenu.style.display = 'none'; 
-        });
+        document.getElementById('a_attachBtnToggle').onclick = (e) => { e.stopPropagation(); document.getElementById('a_attachMenu').style.display = document.getElementById('a_attachMenu').style.display === 'grid' ? 'none' : 'grid'; document.getElementById('a_dropdownMenu').classList.remove('active'); };
+        document.getElementById('a_menuBtn').onclick = (e) => { e.stopPropagation(); document.getElementById('a_dropdownMenu').classList.toggle('active'); document.getElementById('a_attachMenu').style.display = 'none'; };
+        document.addEventListener('click', () => { document.getElementById('a_attachMenu').style.display = 'none'; document.getElementById('a_dropdownMenu').classList.remove('active'); msgContextMenu.style.display = 'none'; });
 
-        const toggleSendMic = () => { 
-            document.getElementById('a_micIcon').style.display = chatInput.value.trim().length > 0 ? 'none' : 'block'; 
-            document.getElementById('a_sendIcon').style.display = chatInput.value.trim().length > 0 ? 'block' : 'none'; 
-        };
+        const toggleSendMic = () => { document.getElementById('a_micIcon').style.display = chatInput.value.trim().length > 0 ? 'none' : 'block'; document.getElementById('a_sendIcon').style.display = chatInput.value.trim().length > 0 ? 'block' : 'none'; };
         chatInput.addEventListener('input', toggleSendMic);
 
-        // Admin File Upload
         const handleFile = async (e) => {
             if(!window.currentActiveUid) return;
-            const file = e.target.files[0]; 
-            if(!file) return;
-
-            let time = getFormattedTime();
-            let tempMsgRef = push(ref(db, 'chats/' + window.currentActiveUid + '/messages'));
+            const file = e.target.files[0]; if(!file) return;
+            let time = getFormattedTime(), tempMsgRef = push(ref(db, 'chats/' + window.currentActiveUid + '/messages'));
             set(tempMsgRef, { text: `⏳ Uploading...`, sender: 'admin', time: time, timestamp: Date.now(), isEdited: false, isDeleted: false });
-
             try {
-                const data = await uploadFileToServer(file);
-                let msgText = file.type.startsWith('image/') ? 'Photo' : file.type.startsWith('video/') ? 'Video' : 'Document';
-                update(tempMsgRef, { text: msgText, fileUrl: data.url, fileType: data.type });
-                update(ref(db, 'chats/' + window.currentActiveUid + '/userInfo'), { lastTime: time });
-            } catch(err) { 
-                update(tempMsgRef, { text: `❌ Upload Failed` }); 
-            }
+                const data = await uploadFileToServer(file); let msgText = file.type.startsWith('image/') ? 'Photo' : file.type.startsWith('video/') ? 'Video' : 'Document';
+                update(tempMsgRef, { text: msgText, fileUrl: data.url, fileType: data.type }); update(ref(db, 'chats/' + window.currentActiveUid + '/userInfo'), { lastTime: time });
+            } catch(err) { update(tempMsgRef, { text: `❌ Upload Failed` }); }
             e.target.value = '';
         };
 
-        document.getElementById('a_attachGal').onclick = () => document.getElementById('a_galleryInput').click();
-        document.getElementById('a_attachDoc').onclick = () => document.getElementById('a_docInput').click();
-        document.getElementById('a_attachAud').onclick = () => document.getElementById('a_audioInput').click();
-        document.getElementById('a_attachCam').onclick = () => document.getElementById('a_cameraInput').click();
-        document.getElementById('a_cameraBtnInline').onclick = () => document.getElementById('a_cameraInput').click();['a_galleryInput', 'a_docInput', 'a_audioInput', 'a_cameraInput'].forEach(id => {
-            document.getElementById(id).addEventListener('change', handleFile)
-        });
+        document.getElementById('a_attachGal').onclick = () => document.getElementById('a_galleryInput').click(); document.getElementById('a_attachDoc').onclick = () => document.getElementById('a_docInput').click();
+        document.getElementById('a_attachAud').onclick = () => document.getElementById('a_audioInput').click(); document.getElementById('a_attachCam').onclick = () => document.getElementById('a_cameraInput').click();
+        document.getElementById('a_cameraBtnInline').onclick = () => document.getElementById('a_cameraInput').click();['a_galleryInput', 'a_docInput', 'a_audioInput', 'a_cameraInput'].forEach(id => { document.getElementById(id).addEventListener('change', handleFile) });
 
-        // Admin Voice & Text Logic
-        let mediaRecorder; 
-        let audioChunks =[]; 
-        let recordTimerInt; 
-        let recordSeconds = 0;
-        const voiceUI = document.getElementById('a_voiceUI'); 
-        const timerText = document.getElementById('a_recordTimer');
-
+        let mediaRecorder, audioChunks =[], recordTimerInt, recordSeconds = 0; const voiceUI = document.getElementById('a_voiceUI'), timerText = document.getElementById('a_recordTimer');
         document.getElementById('a_mainActionBtn').onclick = async () => {
             if(!window.currentActiveUid) return;
-            
             if(chatInput.value.trim() !== '') {
-                // Send Text
-                let time = getFormattedTime();
-                push(ref(db, 'chats/' + window.currentActiveUid + '/messages'), { text: chatInput.value.trim(), sender: 'admin', time: time, timestamp: Date.now(), isEdited: false, isDeleted: false });
-                update(ref(db, 'chats/' + window.currentActiveUid + '/userInfo'), { lastTime: time });
-                chatInput.value = ''; 
-                toggleSendMic(); 
+                let time = getFormattedTime(); push(ref(db, 'chats/' + window.currentActiveUid + '/messages'), { text: chatInput.value.trim(), sender: 'admin', time: time, timestamp: Date.now(), isEdited: false, isDeleted: false });
+                update(ref(db, 'chats/' + window.currentActiveUid + '/userInfo'), { lastTime: time }); chatInput.value = ''; toggleSendMic(); 
             } else {
-                // Send Voice
                 try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream); 
-                    audioChunks =[];
-                    
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); mediaRecorder = new MediaRecorder(stream); audioChunks =[];
                     mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
-                    
                     mediaRecorder.onstop = async () => {
-                        clearInterval(recordTimerInt); 
-                        voiceUI.style.display = 'none'; 
-                        stream.getTracks().forEach(track => track.stop());
-                        
+                        clearInterval(recordTimerInt); voiceUI.style.display = 'none'; stream.getTracks().forEach(track => track.stop());
                         if(audioChunks.length > 0) {
-                            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                            const fileName = `voice_${Date.now()}.webm`;
-                            const file = new File([audioBlob], fileName, { type: 'audio/webm' });
-                            
-                            let time = getFormattedTime();
-                            let tempMsgRef = push(ref(db, 'chats/' + window.currentActiveUid + '/messages'));
+                            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }), file = new File([audioBlob], `voice_${Date.now()}.webm`, { type: 'audio/webm' });
+                            let time = getFormattedTime(), tempMsgRef = push(ref(db, 'chats/' + window.currentActiveUid + '/messages'));
                             set(tempMsgRef, { text: `🎤 Sending...`, sender: 'admin', time: time, timestamp: Date.now(), isEdited: false, isDeleted: false });
-                            
                             try {
-                                const data = await uploadFileToServer(file);
-                                update(tempMsgRef, { text: 'Voice Message', fileUrl: data.url, fileType: data.type });
-                                update(ref(db, 'chats/' + window.currentActiveUid + '/userInfo'), { lastTime: time });
-                            } catch(err) { 
-                                update(tempMsgRef, { text: `❌ Failed` }); 
-                            }
+                                const data = await uploadFileToServer(file); update(tempMsgRef, { text: 'Voice Message', fileUrl: data.url, fileType: data.type }); update(ref(db, 'chats/' + window.currentActiveUid + '/userInfo'), { lastTime: time });
+                            } catch(err) { update(tempMsgRef, { text: `❌ Failed` }); }
                         }
                     };
-                    
-                    voiceUI.style.display = 'flex'; 
-                    recordSeconds = 0; 
-                    timerText.innerText = "0:00";
-                    recordTimerInt = setInterval(() => { 
-                        recordSeconds++; 
-                        let m = Math.floor(recordSeconds / 60); 
-                        let s = recordSeconds % 60; 
-                        timerText.innerText = `${m}:${s < 10 ? '0' : ''}${s}`; 
-                    }, 1000);
-                    
-                    mediaRecorder.start();
-                } catch (e) { 
-                    alert("Microphone permission denied!"); 
-                }
+                    voiceUI.style.display = 'flex'; recordSeconds = 0; timerText.innerText = "0:00";
+                    recordTimerInt = setInterval(() => { recordSeconds++; let m = Math.floor(recordSeconds / 60), s = recordSeconds % 60; timerText.innerText = `${m}:${s < 10 ? '0' : ''}${s}`; }, 1000); mediaRecorder.start();
+                } catch (e) { alert("Microphone permission denied!"); }
             }
         };
         
-        document.getElementById('a_stopVoiceBtn').onclick = () => { 
-            if(mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); 
-        };
-        
-        document.getElementById('a_deleteVoiceBtn').onclick = () => { 
-            if(mediaRecorder && mediaRecorder.state === 'recording') { 
-                audioChunks =[]; 
-                mediaRecorder.stop(); 
-            } 
-        };
+        document.getElementById('a_stopVoiceBtn').onclick = () => { if(mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); }; document.getElementById('a_deleteVoiceBtn').onclick = () => { if(mediaRecorder && mediaRecorder.state === 'recording') { audioChunks =[]; mediaRecorder.stop(); } };
+        chatInput.onkeypress = (e) => { if(e.key === 'Enter') document.getElementById('a_mainActionBtn').click(); };
 
-        chatInput.onkeypress = (e) => { 
-            if(e.key === 'Enter') document.getElementById('a_mainActionBtn').click(); 
-        };
+        document.getElementById('a_menuEdit').onclick = () => { let newText = prompt("Edit your message:"); if (newText && newText.trim() !== '') update(ref(db, `chats/${window.currentActiveUid}/messages/${selectedMsgId}`), { text: newText.trim(), isEdited: true }); };
+        document.getElementById('a_menuDeleteEveryone').onclick = () => { if(confirm("Delete for everyone?")) update(ref(db, `chats/${window.currentActiveUid}/messages/${selectedMsgId}`), { isDeleted: true }); };
+        document.getElementById('a_menuDeleteMe').onclick = () => { localStorage.setItem(`deleted_${selectedMsgId}`, "true"); document.getElementById('a_msg_'+selectedMsgId).style.display = 'none'; };
+        document.getElementById('a_adminBlockUser').onclick = () => { if(!window.currentActiveUid) return; let isBlocked = users[window.currentActiveUid].isBlocked; update(ref(db, 'chats/' + window.currentActiveUid + '/userInfo'), { isBlocked: !isBlocked }); alert(isBlocked ? "User Unblocked!" : "User Blocked!"); };
+        document.getElementById('a_adminDeleteChat').onclick = () => { if(!window.currentActiveUid) return; if(confirm("Are you sure you want to permanently delete this user?")) { remove(ref(db, 'chats/' + window.currentActiveUid)); window.a_closeInbox(); } };
 
-        document.getElementById('a_menuEdit').onclick = () => { 
-            let newText = prompt("Edit your message:"); 
-            if (newText && newText.trim() !== '') update(ref(db, `chats/${window.currentActiveUid}/messages/${selectedMsgId}`), { text: newText.trim(), isEdited: true }); 
-        };
-        
-        document.getElementById('a_menuDeleteEveryone').onclick = () => { 
-            if(confirm("Delete for everyone?")) update(ref(db, `chats/${window.currentActiveUid}/messages/${selectedMsgId}`), { isDeleted: true }); 
-        };
-        
-        document.getElementById('a_menuDeleteMe').onclick = () => { 
-            localStorage.setItem(`deleted_${selectedMsgId}`, "true"); 
-            document.getElementById('a_msg_'+selectedMsgId).style.display = 'none'; 
-        };
-
-        document.getElementById('a_adminBlockUser').onclick = () => { 
-            if(!window.currentActiveUid) return; 
-            let isBlocked = users[window.currentActiveUid].isBlocked; 
-            update(ref(db, 'chats/' + window.currentActiveUid + '/userInfo'), { isBlocked: !isBlocked }); 
-            alert(isBlocked ? "User Unblocked!" : "User Blocked!"); 
-        };
-        
-        document.getElementById('a_adminDeleteChat').onclick = () => { 
-            if(!window.currentActiveUid) return; 
-            if(confirm("Are you sure you want to permanently delete this user?")) { 
-                remove(ref(db, 'chats/' + window.currentActiveUid)); 
-                window.a_closeInbox(); 
-            } 
-        };
-
-        const emojiPanel = document.getElementById('a_emojiPanel'); 
-        const emojis =["😀","😃","😄","😁","😆","😅","😂","🤣","🥲","🥹","☺️","😊","😇","🙂","🙃","😉","😍","🥰","😘"];
-        emojis.forEach(e => { 
-            let s = document.createElement('span'); 
-            s.innerText = e; 
-            s.onclick = () => { chatInput.value += e; toggleSendMic(); }; 
-            document.getElementById('a_emojiGrid').appendChild(s); 
-        });
-        document.getElementById('a_emojiBtn').onclick = () => { 
-            emojiPanel.style.display = emojiPanel.style.display === 'flex' ? 'none' : 'flex'; 
-            inboxChatArea.scrollTop = inboxChatArea.scrollHeight; 
-        };
+        const emojiPanel = document.getElementById('a_emojiPanel'), emojis =["😀","😃","😄","😁","😆","😅","😂","🤣","🥲","🥹","☺️","😊","😇","🙂","🙃","😉","😍","🥰","😘"];
+        emojis.forEach(e => { let s = document.createElement('span'); s.innerText = e; s.onclick = () => { chatInput.value += e; toggleSendMic(); }; document.getElementById('a_emojiGrid').appendChild(s); });
+        document.getElementById('a_emojiBtn').onclick = () => { emojiPanel.style.display = emojiPanel.style.display === 'flex' ? 'none' : 'flex'; inboxChatArea.scrollTop = inboxChatArea.scrollHeight; };
         chatInput.onfocus = () => emojiPanel.style.display = 'none';
 
         function showNotification(uid, msg) {
-            clearTimeout(notificationTimeout); 
-            notificationUidTarget = uid;
-            document.getElementById('a_notifName').innerText = users[uid].nickname; 
-            document.getElementById('a_notifMsg').innerText = msg; 
-            document.getElementById('a_notifAvatar').src = users[uid].avatar;
-            document.getElementById('a_topNotification').classList.add('show'); 
-            notificationTimeout = setTimeout(() => { 
-                document.getElementById('a_topNotification').classList.remove('show'); 
-            }, 3500);
+            clearTimeout(notificationTimeout); notificationUidTarget = uid;
+            document.getElementById('a_notifName').innerText = users[uid].nickname; document.getElementById('a_notifMsg').innerText = msg; document.getElementById('a_notifAvatar').src = users[uid].avatar;
+            document.getElementById('a_topNotification').classList.add('show'); notificationTimeout = setTimeout(() => { document.getElementById('a_topNotification').classList.remove('show'); }, 3500);
         }
 
-        // WebRTC Call System (Admin)
+        // WebRTC System (Admin)
         let localStream, peerConnection, isCallActive = false;
-        let a_currentFacingMode = 'user'; // Admin camera mode
+        let currentCallType = 'audio';
+        let a_currentFacingMode = 'user'; 
         const servers = { iceServers: [{ urls:['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }] };
-        const callScreen = document.getElementById('a_callScreen'); 
-        const connectingOverlay = document.getElementById('a_connectingOverlay');
-        const fakeRemoteVideo = document.getElementById('a_fakeRemoteVideo'); 
-        const localCamVideo = document.getElementById('a_localCamVideo');
-        const callStatusText = document.getElementById('a_callStatusText'); 
-        const receiveCallDiv = document.getElementById('a_receiveCallDiv');
+        const callScreen = document.getElementById('a_callScreen'), connectingOverlay = document.getElementById('a_connectingOverlay');
+        const realRemoteVideo = document.getElementById('a_realRemoteVideo'), fakeRemoteVideo = document.getElementById('a_fakeRemoteVideo'); 
+        const realRemoteAudio = document.getElementById('a_realRemoteAudio'), localCamVideo = document.getElementById('a_localCamVideo');
+        const callStatusText = document.getElementById('a_callStatusText'), receiveCallDiv = document.getElementById('a_receiveCallDiv');
         const globalCallNotif = document.getElementById('a_globalCallNotif');
         let ringingUid = null;
 
-        // Global watcher for calls
         onValue(ref(db, 'calls'), (snapshot) => {
             const calls = snapshot.val();
+            if(!calls) { if(isCallActive) endCallCleanup(); globalCallNotif.classList.remove('show'); stopGlobalRingtone(); return; }
             
-            if(!calls) { 
-                if(isCallActive) endCallCleanup(); 
-                globalCallNotif.classList.remove('show');
-                stopGlobalRingtone();
-                return; 
-            }
-            
-            // Check all incoming calls
             let incomingCallFound = false;
             for (let uid in calls) {
                 let callData = calls[uid];
                 
-                // Line Busy Logic
                 if(callData.status === 'ringing' && isCallActive && uid !== window.currentActiveCallUid) {
-                    // Tell other client line is busy immediately
                     update(ref(db, 'calls/' + uid), { status: 'busy' });
-                    // Save to history as missed
                     push(ref(db, 'adminCallHistory'), { uid: uid, status: 'missed', direction: 'incoming', type: callData.type, timestamp: Date.now() });
                     continue;
                 }
 
                 if (callData.status === 'ringing' && callData.caller === 'client' && !isCallActive) {
-                    incomingCallFound = true;
-                    ringingUid = uid;
+                    incomingCallFound = true; ringingUid = uid; currentCallType = callData.type;
+                    let uName = users[uid] ? users[uid].nickname : "Client";
+                    let uAvatar = users[uid] ? users[uid].avatar : "https://cdn-icons-png.flaticon.com/512/847/847969.png";
                     
-                    // If Admin is inside the specific chat, show full call screen
                     if(window.currentActiveUid === uid && document.getElementById('a_inboxScreen').classList.contains('active')) {
-                        document.getElementById('a_callNameUI').innerText = users[uid] ? users[uid].nickname : "Client";
-                        document.getElementById('a_audioCallPic').src = users[uid] ? users[uid].avatar : "https://cdn-icons-png.flaticon.com/512/847/847969.png";
-                        callScreen.style.display = 'flex'; 
-                        callStatusText.innerText = "Incoming Call..."; 
-                        receiveCallDiv.style.display = 'flex'; 
-                        playGlobalRingtone();
+                        document.getElementById('a_callNameUI').innerText = uName; document.getElementById('a_audioCallPic').src = uAvatar;
+                        callScreen.style.display = 'flex'; callStatusText.innerText = "Incoming Call..."; receiveCallDiv.style.display = 'flex'; playGlobalRingtone();
                     } else {
-                        // Else show Global floating Notification
-                        document.getElementById('a_gCallName').innerText = users[uid] ? users[uid].nickname : "Client";
-                        document.getElementById('a_gCallAvatar').src = users[uid] ? users[uid].avatar : "https://cdn-icons-png.flaticon.com/512/847/847969.png";
-                        document.getElementById('a_gCallType').innerText = callData.type === 'video' ? "Incoming Video Call" : "Incoming Audio Call";
-                        globalCallNotif.classList.add('show');
-                        playGlobalRingtone();
+                        document.getElementById('a_gCallName').innerText = uName; document.getElementById('a_gCallAvatar').src = uAvatar;
+                        document.getElementById('a_gCallType').innerText = currentCallType === 'video' ? "Incoming Video Call" : "Incoming Audio Call";
+                        globalCallNotif.classList.add('show'); playGlobalRingtone(); sendPushNotification("Call from " + uName, "Tap to answer");
                     }
                 }
             }
             if(!incomingCallFound) { globalCallNotif.classList.remove('show'); stopGlobalRingtone(); }
             
-            // Manage Active Call
             if (window.currentActiveCallUid && calls[window.currentActiveCallUid]) {
                 let myCall = calls[window.currentActiveCallUid];
+                currentCallType = myCall.type;
                 if (myCall.status === 'answered' && isCallActive && myCall.caller === 'admin') { 
                     stopGlobalRingtone(); callStatusText.innerText = "00:00"; startWebRTCConnection(true); 
                 }
                 if (myCall.status === 'answered' && myCall.videoUrl && fakeRemoteVideo.src !== myCall.videoUrl) {
-                    connectingOverlay.style.display = 'none'; 
-                    fakeRemoteVideo.style.display = 'block'; 
-                    fakeRemoteVideo.src = myCall.videoUrl; 
-                    fakeRemoteVideo.play();
-                    // show fake audio control
+                    connectingOverlay.style.display = 'none'; realRemoteVideo.style.display = 'none'; 
+                    fakeRemoteVideo.style.display = 'block'; fakeRemoteVideo.src = myCall.videoUrl; fakeRemoteVideo.play();
                     document.getElementById('a_fakeAudioToggleBtn').style.display = 'block';
                 }
                 if (myCall.status === 'ended') endCallCleanup();
             } else if (isCallActive) { endCallCleanup(); }
         });
 
-        // Global Accept
         document.getElementById('a_gCallAccept').onclick = () => {
             if(ringingUid) {
-                window.a_openInbox(ringingUid); // Open the chat screen first
-                window.currentActiveCallUid = ringingUid;
-                globalCallNotif.classList.remove('show');
-                
-                // Directly trigger answer
-                stopGlobalRingtone(); 
-                isCallActive = true; 
-                document.getElementById('a_callNameUI').innerText = users[ringingUid].nickname;
-                document.getElementById('a_audioCallPic').src = users[ringingUid].avatar;
-                callScreen.style.display = 'flex';
-                receiveCallDiv.style.display = 'none';
-                callStatusText.innerText = "Connecting..."; 
-                connectingOverlay.style.display = 'flex';
-                update(ref(db, 'calls/' + ringingUid), { status: 'answered' }); 
-                startWebRTCConnection(false);
-                
-                push(ref(db, 'adminCallHistory'), { uid: ringingUid, status: 'answered', direction: 'incoming', type: 'call', timestamp: Date.now() });
+                window.a_openInbox(ringingUid); window.currentActiveCallUid = ringingUid; globalCallNotif.classList.remove('show');
+                stopGlobalRingtone(); isCallActive = true; 
+                document.getElementById('a_callNameUI').innerText = users[ringingUid].nickname; document.getElementById('a_audioCallPic').src = users[ringingUid].avatar;
+                callScreen.style.display = 'flex'; receiveCallDiv.style.display = 'none'; callStatusText.innerText = "Connecting..."; connectingOverlay.style.display = 'flex';
+                update(ref(db, 'calls/' + ringingUid), { status: 'answered' }); startWebRTCConnection(false);
+                push(ref(db, 'adminCallHistory'), { uid: ringingUid, status: 'answered', direction: 'incoming', type: currentCallType, timestamp: Date.now() });
             }
         };
 
-        // Global Reject
         document.getElementById('a_gCallReject').onclick = () => {
             if(ringingUid) {
-                update(ref(db, 'calls/' + ringingUid), { status: 'ended' });
-                globalCallNotif.classList.remove('show');
-                stopGlobalRingtone();
-                push(ref(db, 'adminCallHistory'), { uid: ringingUid, status: 'missed', direction: 'incoming', type: 'call', timestamp: Date.now() });
+                update(ref(db, 'calls/' + ringingUid), { status: 'ended' }); globalCallNotif.classList.remove('show'); stopGlobalRingtone();
+                push(ref(db, 'adminCallHistory'), { uid: ringingUid, status: 'missed', direction: 'incoming', type: currentCallType, timestamp: Date.now() });
             }
         };
 
         window.a_initiateCall = function(type) {
             if(!window.currentActiveUid) return;
-            window.currentActiveCallUid = window.currentActiveUid;
-            isCallActive = true; 
-            callScreen.style.display = 'flex'; 
-            receiveCallDiv.style.display = 'none'; 
-            callStatusText.innerText = "Calling...";
-            document.getElementById('a_callNameUI').innerText = users[window.currentActiveCallUid].nickname; 
-            document.getElementById('a_audioCallPic').src = users[window.currentActiveCallUid].avatar;
-            set(ref(db, 'calls/' + window.currentActiveCallUid), { caller: 'admin', type: type, status: 'ringing', timestamp: Date.now() }); 
-            playGlobalRingtone();
+            window.currentActiveCallUid = window.currentActiveUid; currentCallType = type; isCallActive = true; 
+            callScreen.style.display = 'flex'; receiveCallDiv.style.display = 'none'; callStatusText.innerText = "Calling...";
+            document.getElementById('a_callNameUI').innerText = users[window.currentActiveCallUid].nickname; document.getElementById('a_audioCallPic').src = users[window.currentActiveCallUid].avatar;
+            set(ref(db, 'calls/' + window.currentActiveCallUid), { caller: 'admin', type: type, status: 'ringing', timestamp: Date.now() }); playGlobalRingtone();
             push(ref(db, 'adminCallHistory'), { uid: window.currentActiveCallUid, status: 'answered', direction: 'outgoing', type: type, timestamp: Date.now() });
         };
         
@@ -1602,125 +1334,106 @@
 
         document.getElementById('a_answerCallBtn').onclick = () => {
             if(ringingUid) window.currentActiveCallUid = ringingUid;
-            stopGlobalRingtone(); 
-            isCallActive = true; 
-            receiveCallDiv.style.display = 'none';
-            callStatusText.innerText = "Connecting..."; 
-            connectingOverlay.style.display = 'flex';
-            update(ref(db, 'calls/' + window.currentActiveCallUid), { status: 'answered' }); 
-            startWebRTCConnection(false);
-            push(ref(db, 'adminCallHistory'), { uid: window.currentActiveCallUid, status: 'answered', direction: 'incoming', type: 'call', timestamp: Date.now() });
+            stopGlobalRingtone(); isCallActive = true; receiveCallDiv.style.display = 'none';
+            callStatusText.innerText = "Connecting..."; connectingOverlay.style.display = 'flex';
+            update(ref(db, 'calls/' + window.currentActiveCallUid), { status: 'answered' }); startWebRTCConnection(false);
+            push(ref(db, 'adminCallHistory'), { uid: window.currentActiveCallUid, status: 'answered', direction: 'incoming', type: currentCallType, timestamp: Date.now() });
         };
 
-        // Mic Control
+        // Media Controls
         document.getElementById('a_callMuteBtn').onclick = () => {
             if(!localStream) return;
             let audioTrack = localStream.getAudioTracks()[0];
-            if(audioTrack) {
-                audioTrack.enabled = !audioTrack.enabled;
-                document.getElementById('a_callMuteBtn').classList.toggle('off');
-            }
+            if(audioTrack) { audioTrack.enabled = !audioTrack.enabled; document.getElementById('a_callMuteBtn').classList.toggle('off'); }
         };
 
-        // Video Control
         document.getElementById('a_callVideoBtnInside').onclick = () => {
             if(!localStream) return;
             let videoTrack = localStream.getVideoTracks()[0];
-            if(videoTrack) {
-                videoTrack.enabled = !videoTrack.enabled;
-                document.getElementById('a_callVideoBtnInside').classList.toggle('off');
-            }
+            if(videoTrack) { videoTrack.enabled = !videoTrack.enabled; document.getElementById('a_callVideoBtnInside').classList.toggle('off'); }
         };
 
-        // Camera Flip
+        document.getElementById('a_callSpeakerBtn').onclick = async () => {
+            const btn = document.getElementById('a_callSpeakerBtn');
+            try {
+                if (realRemoteAudio.setSinkId) {
+                    if (btn.classList.contains('active')) { await realRemoteAudio.setSinkId(''); btn.classList.remove('active'); } 
+                    else { btn.classList.add('active'); alert("Speaker toggled."); }
+                } else { btn.classList.toggle('active'); alert("Speaker toggled. (Manual routing not fully supported on mobile web)"); }
+            } catch(e) { console.error(e); }
+        };
+
         document.getElementById('a_flipCameraBtn').onclick = async () => {
-            if(!localStream) return;
+            if(!localStream || currentCallType === 'audio') return;
             a_currentFacingMode = a_currentFacingMode === 'user' ? 'environment' : 'user';
-            const oldVideoTrack = localStream.getVideoTracks()[0];
-            if(oldVideoTrack) oldVideoTrack.stop();
-            
+            const oldVideoTrack = localStream.getVideoTracks()[0]; if(oldVideoTrack) oldVideoTrack.stop();
             try {
                 const newStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: a_currentFacingMode } } });
-                const newVideoTrack = newStream.getVideoTracks()[0];
-                localStream.removeTrack(oldVideoTrack);
-                localStream.addTrack(newVideoTrack);
-                
-                if(peerConnection) {
-                    const sender = peerConnection.getSenders().find(s => s.track && s.track.kind === 'video');
-                    if(sender) sender.replaceTrack(newVideoTrack);
-                }
+                const newVideoTrack = newStream.getVideoTracks()[0]; localStream.removeTrack(oldVideoTrack); localStream.addTrack(newVideoTrack);
+                if(peerConnection) { const sender = peerConnection.getSenders().find(s => s.track && s.track.kind === 'video'); if(sender) sender.replaceTrack(newVideoTrack); }
                 localCamVideo.srcObject = localStream;
             } catch(e) { console.error("Error flipping camera:", e); }
         };
 
-        // ADMIN FAKE VIDEO SOUND TOGGLE
         const fakeAudioBtn = document.getElementById('a_fakeAudioToggleBtn');
         fakeAudioBtn.onclick = () => {
             fakeRemoteVideo.muted = !fakeRemoteVideo.muted;
-            if(fakeRemoteVideo.muted) {
-                fakeAudioBtn.innerText = "Fake Video Sound: OFF";
-                fakeAudioBtn.classList.add('muted');
-            } else {
-                fakeAudioBtn.innerText = "Fake Video Sound: ON";
-                fakeAudioBtn.classList.remove('muted');
-            }
+            if(fakeRemoteVideo.muted) { fakeAudioBtn.innerText = "Fake Video Sound: OFF"; fakeAudioBtn.classList.add('muted'); } 
+            else { fakeAudioBtn.innerText = "Fake Video Sound: ON"; fakeAudioBtn.classList.remove('muted'); }
         };
 
-        // ADMIN INJECT VIDEO MANUAL BUTTON
         document.getElementById('a_injectVideoBtn').onclick = () => {
-            if (!window.currentActiveCallUid || !isCallActive) {
-                alert("Please start or answer a call first!");
-                return;
-            }
+            if (!window.currentActiveCallUid || !isCallActive) { alert("Please start or answer a call first!"); return; }
             let videoUrl = prompt("Enter direct MP4 video link (Or send via Telegram Bot with /inject):");
             if (videoUrl && videoUrl.trim() !== "") {
                 update(ref(db, 'calls/' + window.currentActiveCallUid), { videoUrl: videoUrl.trim() });
-                alert("Video Injected Successfully!");
-                // Default sound to ON for injected video
-                fakeRemoteVideo.muted = false;
-                fakeAudioBtn.innerText = "Fake Video Sound: ON";
-                fakeAudioBtn.classList.remove('muted');
+                alert("Video Injected Successfully!"); fakeRemoteVideo.muted = false; fakeAudioBtn.innerText = "Fake Video Sound: ON"; fakeAudioBtn.classList.remove('muted');
             }
         };
 
         function endCallCleanup() {
-            isCallActive = false; 
-            callScreen.style.display = 'none'; 
-            connectingOverlay.style.display = 'none';
-            fakeRemoteVideo.style.display = 'none'; 
-            localCamVideo.style.display = 'none'; 
-            fakeRemoteVideo.pause(); 
-            fakeRemoteVideo.src = ""; 
-            stopGlobalRingtone();
-            document.getElementById('a_fakeAudioToggleBtn').style.display = 'none';
-            
-            // Reset UI states
-            document.getElementById('a_callMuteBtn').classList.remove('off');
-            document.getElementById('a_callVideoBtnInside').classList.remove('off');
-            a_currentFacingMode = 'user';
-
-            if (localStream) localStream.getTracks().forEach(track => track.stop()); 
-            if (peerConnection) peerConnection.close();
-            
+            isCallActive = false; callScreen.style.display = 'none'; connectingOverlay.style.display = 'none';
+            fakeRemoteVideo.style.display = 'none'; realRemoteVideo.style.display = 'none'; localCamVideo.style.display = 'none'; 
+            fakeRemoteVideo.pause(); fakeRemoteVideo.src = ""; realRemoteVideo.pause(); realRemoteVideo.srcObject = null;
+            realRemoteAudio.pause(); realRemoteAudio.srcObject = null; stopGlobalRingtone(); document.getElementById('a_fakeAudioToggleBtn').style.display = 'none';
+            document.getElementById('a_callMuteBtn').classList.remove('off'); document.getElementById('a_callVideoBtnInside').classList.remove('off'); a_currentFacingMode = 'user';
+            if (localStream) localStream.getTracks().forEach(track => track.stop()); if (peerConnection) peerConnection.close();
             if (window.currentActiveCallUid) {
-                let time = getFormattedTime(); 
-                push(ref(db, `chats/${window.currentActiveCallUid}/messages`), { text: "📞 Call Ended", sender: 'sys', time: time, timestamp: Date.now(), isEdited:false, isDeleted:false });
+                push(ref(db, `chats/${window.currentActiveCallUid}/messages`), { text: "📞 Call Ended", sender: 'sys', time: getFormattedTime(), timestamp: Date.now(), isEdited:false, isDeleted:false });
                 remove(ref(db, `calls/${window.currentActiveCallUid}`));
             }
-            window.currentActiveCallUid = null;
-            ringingUid = null;
+            window.currentActiveCallUid = null; ringingUid = null;
         }
         
-        document.getElementById('a_endCallBtn').onclick = () => { if(window.currentActiveCallUid) update(ref(db, 'calls/' + window.currentActiveCallUid), { status: 'ended' }); };
-        document.getElementById('a_endCallTop').onclick = () => { if(window.currentActiveCallUid) update(ref(db, 'calls/' + window.currentActiveCallUid), { status: 'ended' }); };
+        document.getElementById('a_endCallBtn').onclick = () => { if(window.currentActiveCallUid) { update(ref(db, 'calls/' + window.currentActiveCallUid), { status: 'ended' }); endCallCleanup(); } };
+        document.getElementById('a_endCallTop').onclick = () => { if(window.currentActiveCallUid) { update(ref(db, 'calls/' + window.currentActiveCallUid), { status: 'ended' }); endCallCleanup(); } };
 
         async function startWebRTCConnection(isOffer) {
             try {
-                localStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: a_currentFacingMode }, audio: true });
-                localCamVideo.srcObject = localStream; localCamVideo.style.display = 'block';
+                let constraints = { audio: true, video: currentCallType === 'video' ? { facingMode: a_currentFacingMode } : false };
+                localStream = await navigator.mediaDevices.getUserMedia(constraints);
+                if(currentCallType === 'video') { localCamVideo.srcObject = localStream; localCamVideo.style.display = 'block'; }
+                
                 peerConnection = new RTCPeerConnection(servers);
-                localStream.getAudioTracks().forEach(track => peerConnection.addTrack(track, localStream));
-                peerConnection.ontrack = (event) => { const remoteAudio = new Audio(); remoteAudio.srcObject = event.streams[0]; remoteAudio.play(); };
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream)); // ADDS BOTH AUDIO & VIDEO
+                
+                peerConnection.ontrack = (event) => { 
+                    connectingOverlay.style.display = 'none';
+                    if (event.track.kind === 'audio') {
+                        if (realRemoteAudio.srcObject !== event.streams[0]) {
+                            realRemoteAudio.srcObject = event.streams[0];
+                            realRemoteAudio.play().catch(e => console.error("Audio error:", e));
+                        }
+                    }
+                    if (event.track.kind === 'video') {
+                        if (realRemoteVideo.srcObject !== event.streams[0]) {
+                            realRemoteVideo.srcObject = event.streams[0];
+                            realRemoteVideo.style.display = 'block';
+                            realRemoteVideo.play().catch(e => console.error("Video error:", e));
+                        }
+                    }
+                };
+                
                 peerConnection.onicecandidate = e => { if (e.candidate) push(ref(db, `calls/${window.currentActiveCallUid}/iceCandidates/admin`), e.candidate.toJSON()); };
 
                 if (isOffer) {
@@ -1745,9 +1458,7 @@
                 onValue(ref(db, `calls/${window.currentActiveCallUid}/iceCandidates/client`), (snapshot) => { 
                     snapshot.forEach((child) => { peerConnection.addIceCandidate(new RTCIceCandidate(child.val())); }); 
                 });
-            } catch (e) { 
-                console.error(e); alert("Camera/Mic permission denied!"); 
-            }
+            } catch (e) { console.error(e); alert("Camera/Mic permission denied! Both sides must grant permissions."); endCallCleanup(); }
         }
     }
 </script>
